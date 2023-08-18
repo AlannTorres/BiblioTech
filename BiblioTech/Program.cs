@@ -1,7 +1,9 @@
+using BiblioTech.Application.Mapper.Core;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.AddAutoMapper(typeof(Core));
 builder.Services.AddControllersWithViews();
 
 var app = builder.Build();

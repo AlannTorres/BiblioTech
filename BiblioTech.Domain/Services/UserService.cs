@@ -37,7 +37,7 @@ public class UserService : IUserService
         return response;
     } // Feito
 
-    async Task<Response> IUserService.InsertAsync(User user)
+    async Task<Response> IUserService.CreateAsync(User user)
     {
         var response = new Response();
         var validation = new UserValidation();

@@ -8,6 +8,7 @@ public interface IUserRepository
     Task<bool> ExistsByCpfAsync(string Cpf);
     Task<int> InsertAsync(User user);
     Task<int> UpdateAsync(User user);
+    Task<int> CreateAsync(User user);
     Task<int> DeleteAsync(int user_id);
     Task<List<User>> ListAllUsersAsync();
     Task<List<object>> ListAllBooksUserAsync(int user_id);
