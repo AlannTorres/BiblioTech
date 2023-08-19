@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiblioTech.Api", "BiblioTech\BiblioTech.Api.csproj", "{CE03D507-8292-49DA-83CC-458E98BA173E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BiblioTech.Application", "BiblioTech.Application\BiblioTech.Application.csproj", "{35B51646-1247-44D4-9546-ED903D899244}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiblioTech.Application", "BiblioTech.Application\BiblioTech.Application.csproj", "{35B51646-1247-44D4-9546-ED903D899244}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BiblioTech.Domain", "BiblioTech.Domain\BiblioTech.Domain.csproj", "{173B3D4F-E2C4-4E08-A33C-3567B9D71312}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiblioTech.Domain", "BiblioTech.Domain\BiblioTech.Domain.csproj", "{173B3D4F-E2C4-4E08-A33C-3567B9D71312}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BiblioTech.Infra", "BiblioTech.Infra\BiblioTech.Infra.csproj", "{D4E6C257-7E10-4240-86B1-D8949B69AFE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BiblioTech.Infra", "BiblioTech.Infra\BiblioTech.Infra.csproj", "{D4E6C257-7E10-4240-86B1-D8949B69AFE4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BiblioTech.Api", "BiblioTech.Api\BiblioTech.Api.csproj", "{1EE0B243-3747-4B6E-8B9C-E19EFB14DC20}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{CE03D507-8292-49DA-83CC-458E98BA173E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CE03D507-8292-49DA-83CC-458E98BA173E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CE03D507-8292-49DA-83CC-458E98BA173E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CE03D507-8292-49DA-83CC-458E98BA173E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{35B51646-1247-44D4-9546-ED903D899244}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{35B51646-1247-44D4-9546-ED903D899244}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35B51646-1247-44D4-9546-ED903D899244}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -33,6 +29,10 @@ Global
 		{D4E6C257-7E10-4240-86B1-D8949B69AFE4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4E6C257-7E10-4240-86B1-D8949B69AFE4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4E6C257-7E10-4240-86B1-D8949B69AFE4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EE0B243-3747-4B6E-8B9C-E19EFB14DC20}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EE0B243-3747-4B6E-8B9C-E19EFB14DC20}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EE0B243-3747-4B6E-8B9C-E19EFB14DC20}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EE0B243-3747-4B6E-8B9C-E19EFB14DC20}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
