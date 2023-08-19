@@ -1,6 +1,6 @@
-﻿using LibrarySystem_2.Domain;
+﻿using BiblioTech.Domain;
 
-namespace LibrarySystem_2.Interfaces.Repositories;
+namespace BiblioTech.Interfaces.Repositories;
 
 public interface IUserRepository
 {

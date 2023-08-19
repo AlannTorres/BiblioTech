@@ -1,8 +1,7 @@
 ﻿using BiblioTech.Domain.Interface.Services;
 using BiblioTech.Domain.Validations;
 using BiblioTech.Domain.Validations.Base;
-using LibrarySystem_2.Domain;
-using LibrarySystem_2.Interfaces.Repositories;
+using BiblioTech.Interfaces.Repositories;
 
 namespace BiblioTech.Domain.Services;
 

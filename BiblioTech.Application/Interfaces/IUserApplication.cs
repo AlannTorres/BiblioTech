@@ -6,5 +6,4 @@ namespace BiblioTech.Application.Interfaces;
 public interface IUserApplication
 {
     Task<Response> CreateAsync(CreateUserRequest user);
-
 }

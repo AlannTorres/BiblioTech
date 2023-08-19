@@ -1,7 +1,6 @@
-﻿namespace LibrarySystem_2.Domain
+﻿namespace BiblioTech.Domain;
+
+public abstract class BaseEntity
 {
-    public abstract class BaseEntity
-    {
-        public long Id { get; set; }
-    }
+    public long Id { get; set; }
 }

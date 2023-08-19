@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using BiblioTech.Application.DataContract.Request;
 using BiblioTech.Application.DataContract.Response;
-using LibrarySystem_2.Domain;
+using BiblioTech.Domain;
 
 namespace BiblioTech.Application.Mapper.Core;
 
