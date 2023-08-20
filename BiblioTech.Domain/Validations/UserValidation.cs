@@ -7,24 +7,22 @@ namespace BiblioTech.Domain.Validations
         public UserValidation()
         {
             RuleFor(x => x.Name)
-                .NotNull().WithMessage("Campo nome obrigatorio")
-                .NotEmpty()
-                .Length(100);
+                .NotEmpty().WithMessage("O campo nome é obrigatório.")
+                .MaximumLength(100).WithMessage("O campo nome não pode ter mais de 100 caracteres.");
 
             RuleFor(x => x.Email)
-                .NotNull()
-                .NotEmpty()
-                .Length(100)
-                .EmailAddress(FluentValidation.Validators.EmailValidationMode.AspNetCoreCompatible);
+                .NotEmpty().WithMessage("O campo e-mail é obrigatório.")
+                .MaximumLength(100).WithMessage("O campo e-mail não pode ter mais de 100 caracteres.")
+                .EmailAddress().WithMessage("O campo e-mail não é um endereço de e-mail válido.");
 
             RuleFor(x => x.Password)
-                .NotEmpty();
+                .NotEmpty().WithMessage("O campo senha é obrigatório.");
 
-            RuleFor(x => x.Telephone);
+            RuleFor(x => x.Telephone)
+                .NotEmpty().WithMessage("O campo telefone é obrigatório.");
 
-            RuleFor(x => x.Address);
-
-            RuleFor(x => x.Password);
+            RuleFor(x => x.Address)
+                .NotEmpty().WithMessage("O campo endereço é obrigatório.");
 
         }
     }

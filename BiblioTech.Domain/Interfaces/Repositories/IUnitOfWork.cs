@@ -10,7 +10,7 @@ public interface IUnitOfWork
     IBookCheckoutRepository BookCheckoutRepository { get; }
     IBookRepository BookRepository { get; }
 
-    IDbConnector dbConnector { get; set; }
+    IDbConnector DbConnector { get; }
 
     void BeginTransaction();
     void CommitTransaction();

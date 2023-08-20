@@ -7,7 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\BiblioTech.Application\BiblioTech.Application.csproj" />
+    <ProjectReference Include="..\BiblioTech.Infra\BiblioTech.Infra.csproj" />
   </ItemGroup>
 
 </Project>

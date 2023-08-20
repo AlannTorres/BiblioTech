@@ -19,8 +19,21 @@ public class UserController : Controller
     public async Task<ActionResult> CreateUser([FromBody] CreateUserRequest request)
     {
         var response = await _userApplication.CreateAsync(request);
-        
+
         if (response.Report.Any()) {
+            return UnprocessableEntity(response.Report);
+        }
+
+        return Ok(response);
+    }
+
+    [HttpGet("{user_id}")]
+    public async Task<ActionResult> GetById(int user_id)
+    {
+        var response = await _userApplication.GetByIdAsync(user_id);
+
+        if (response.Report.Any())
+        {
             return UnprocessableEntity(response.Report);
         }
 

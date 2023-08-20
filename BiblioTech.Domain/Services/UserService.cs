@@ -44,7 +44,7 @@ public class UserService : IUserService
 
         if (errors.Report.Count > 0){ return errors; }
 
-        await _userRepository.InsertAsync(user);
+        await _userRepository.CreateAsync(user);
 
         return response;
     } // Feito

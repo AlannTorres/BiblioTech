@@ -3,11 +3,11 @@ using BiblioTech.Application.DataContract.Request;
 using BiblioTech.Application.DataContract.Response;
 using BiblioTech.Domain;
 
-namespace BiblioTech.Application.Mapper.Core;
+namespace BiblioTech.Application.Mapper;
 
 public class Core : Profile
 {
-    public Core() 
+    public Core()
     {
         UserMap();
     }

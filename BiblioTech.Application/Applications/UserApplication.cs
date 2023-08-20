@@ -4,6 +4,7 @@ using BiblioTech.Application.Interfaces;
 using BiblioTech.Domain.Interface.Services;
 using BiblioTech.Domain.Validations.Base;
 using BiblioTech.Domain;
+using BiblioTech.Application.DataContract.Response;
 
 namespace BiblioTech.Application.Applications;
 
@@ -20,8 +21,21 @@ public class UserApplication : IUserApplication
 
     public async Task<Response> CreateAsync(CreateUserRequest user)
     {
-        var cliente = _mapper.Map<User>(user);
+        // Transformar o CreateUserResquest em UserModel
+        var userMapper = _mapper.Map<User>(user);
 
-        return await _userService.CreateAsync(cliente);
+        return await _userService.CreateAsync(userMapper);
+    }
+
+    public async Task<Response<UserResponse>> GetByIdAsync(int user_id)
+    {
+        Response<User> user = await _userService.GetUserByIdAsync(user_id);
+
+        if (user.Report.Any())
+            return Response.Unprocessable<UserResponse>(user.Report);
+
+        var response = _mapper.Map<UserResponse>(user.Data);
+
+        return Response.OK(response);
     }
 }
