@@ -8,7 +8,7 @@ public enum BookCheckoutEnum
 
 public static class BookCheckoutEnumExtensions
 {
-    public static string GetString(this BookCheckoutEnum status)
+    public static string? GetString(this BookCheckoutEnum status)
     {
         switch (status)
         {

@@ -15,7 +15,7 @@ public class UserController : Controller
         _userApplication = userApplication;
     }
 
-    [HttpPost]
+    [HttpPost("/CreateUser")]
     public async Task<ActionResult> CreateUser([FromBody] CreateUserRequest request)
     {
         var response = await _userApplication.CreateAsync(request);
@@ -27,10 +27,23 @@ public class UserController : Controller
         return Ok(response);
     }
 
-    [HttpGet("{user_id}")]
+    [HttpGet("/{user_id}")]
     public async Task<ActionResult> GetById(int user_id)
     {
         var response = await _userApplication.GetByIdAsync(user_id);
+
+        if (response.Report.Any())
+        {
+            return UnprocessableEntity(response.Report);
+        }
+
+        return Ok(response);
+    }
+
+    [HttpGet("/GetBooksUser")]
+    public async Task<ActionResult> ListBooksUser(int user_id)
+    {
+        var response = await _userApplication.ListBooksCheckoutUser(user_id);
 
         if (response.Report.Any())
         {

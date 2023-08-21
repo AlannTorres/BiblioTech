@@ -10,7 +10,6 @@ public interface IUserService
     Task<Response<User>> GetUserByIdAsync(int user_id);
     Task<Response> DeleteAsync(int user_id);
     Task<Response<List<User>>> ListAllUsersAsync();
-    Task<Response<List<object>>> ListAllBooksUserAsync(int user_id);
-    Task<Response<List<object>>> ListAllBooksReserveUserAsync(int user_id);
-    Task<Response<List<object>>> ListAllBooksCheckoutUserAsync(int user_id);
+    Task<Response<List<BookCheckout>>> ListAllBooksCheckoutUserAsync(int user_id);
+    Task<Response<List<BookReserve>>> ListAllBooksReserveUserAsync(int user_id);
 }

@@ -8,7 +8,7 @@ public enum BookReserveEnum
 
 public static class BookReserverEnumExtensions
 {
-    public static string GetString(this BookReserveEnum status)
+    public static string? GetString(this BookReserveEnum status)
     {
         switch (status)
         {

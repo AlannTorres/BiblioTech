@@ -12,5 +12,5 @@ public class Report
     public string Code { get; set; }
     public string Message { get; set; }
 
-    public static Report Create(string message) => new Report(message);
+    public static Report Create(string message) => new (message);
 }

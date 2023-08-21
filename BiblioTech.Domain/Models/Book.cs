@@ -3,9 +3,9 @@
 public class Book : BaseEntity
 {
     public long ISBN { get; set; }
-    public string title { get; set; }
-    public string description { get; set; }
-    public int year_publication { get; set; }
-    public int quantity { get; set; }
-    public string publishing { get; set; }
+    public string? Title { get; set; }
+    public string? Description { get; set; }
+    public int Year_publication { get; set; }
+    public int Quantity { get; set; }
+    public string? Publishing { get; set; }
 }

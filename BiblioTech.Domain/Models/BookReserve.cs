@@ -4,8 +4,8 @@ namespace BiblioTech.Domain;
 
 public class BookReserve : BaseEntity
 {
-    public int book_id { get; set; }
-    public int user_id { get; set; }
+    public Book? Book { get; set; }
+    public User? User { get; set; }
     public DateTime Reserver_Date { get; set; }
     public BookReserveEnum Reserver_Status { get; set; }
 }

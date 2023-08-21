@@ -17,5 +17,7 @@ public class Core : Profile
         CreateMap<CreateUserRequest, User>();
 
         CreateMap<User, UserResponse>();
+
+        CreateMap<BookCheckout, BookCheckoutResponse>();
     }
 }

@@ -12,12 +12,12 @@ public class UserService : IUserService
     public UserService(IUserRepository userRepository)
     {
         _userRepository = userRepository;
-    } // Feito
+    } 
 
     async Task<Response> IUserService.AutheticationAsync(User user)
     {
         throw new NotImplementedException();
-    }
+    } 
 
     async Task<Response<User>> IUserService.GetUserByIdAsync(int user_id)
     {
@@ -125,9 +125,9 @@ public class UserService : IUserService
         return response;
     } // Feito
 
-    async Task<Response<List<object>>> IUserService.ListAllBooksUserAsync(int user_id)
+    async Task<Response<List<BookCheckout>>> IUserService.ListAllBooksUserAsync(int user_id)
     {
-        var response = new Response<List<object>>();
+        var response = new Response<List<BookCheckout>>();
 
         var exist = await _userRepository.GetUserByIdAsync(user_id);
 

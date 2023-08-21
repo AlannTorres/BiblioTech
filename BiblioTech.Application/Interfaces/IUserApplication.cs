@@ -8,4 +8,5 @@ public interface IUserApplication
 {
     Task<Response> CreateAsync(CreateUserRequest user);
     Task<Response<UserResponse>> GetByIdAsync(int user_id);
+    Task<Response<List<BookCheckoutResponse>>> ListBooksCheckoutUser(int user_id);
 }

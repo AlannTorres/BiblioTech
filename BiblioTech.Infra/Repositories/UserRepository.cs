@@ -14,7 +14,7 @@ public class UserRepository : IUserRepository
         _dbConnector = dbConnector;
     }
 
-    public async Task<int> CreateAsync(User user)
+    public async Task CreateAsync(User user)
     {
         string sql = @"INSERT INTO
                        Users (Password, Name, CPF, Email, Telephone, Address) 
@@ -30,18 +30,16 @@ public class UserRepository : IUserRepository
             user.Address
         };
 
-        var cliente = await _dbConnector.DbConnection
+        await _dbConnector.DbConnection
             .ExecuteAsync(sql, param, _dbConnector.Dbtransaction);
-
-        return cliente;
     }
 
-    public Task<int> UpdateAsync(User user)
+    public async Task UpdateAsync(User user)
     {
         throw new NotImplementedException();
     }
 
-    public Task<int> DeleteAsync(int user_id)
+    public async Task DeleteAsync(int user_id)
     {
         throw new NotImplementedException();
     }
@@ -66,29 +64,44 @@ public class UserRepository : IUserRepository
         return user;
     } // Feito
 
+    public async Task<List<BookCheckout>> ListAllBooksCheckoutUserAsync(int user_id)
+    {
+        string sql = @"
+             SELECT 
+                 bc.id,
+                 bc.checkout_Date ,
+                 bc.due_Date,
+                 bc.status_Checkout,
+                 b.id,
+                 b.title,
+                 u.id
+             FROM Books b
+             INNER JOIN BooksCheckout bc ON b.id = bc.book_id
+             INNER JOIN Users u ON bc.user_id = u.id
+             WHERE bc.user_id = @user_id
+             ORDER BY bc.due_Date";
 
+        var booksCheckout = await _dbConnector.DbConnection.QueryAsync<BookCheckout, Book, User, BookCheckout>(
+            sql: sql,
+            map: (bookCheckout, book, user) =>
+            {
+                bookCheckout.Book = book;
+                bookCheckout.User = user;
+                return bookCheckout;
+            },
+            param: new { user_id },
+            splitOn: "id",
+            transaction: _dbConnector.Dbtransaction);
 
-    public Task<List<object>> ListAllBooksCheckoutUserAsync(int user_id)
+        return booksCheckout.ToList();
+    }
+
+    public async Task<List<BookReserve>> ListAllBooksReserveUserAsync(int user_id)
     {
         throw new NotImplementedException();
     }
 
-    public Task<List<object>> ListAllBooksReserveUserAsync(int user_id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<List<object>> ListAllBooksUserAsync(int user_id)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<List<User>> ListAllUsersAsync()
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task<List<object>> VerifyUserPendingAsync(int user_id)
+    public async Task<List<object>> VerifyUserPendingAsync(int user_id)
     {
         throw new NotImplementedException();
     }

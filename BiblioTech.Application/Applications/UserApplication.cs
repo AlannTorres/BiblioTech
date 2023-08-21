@@ -38,4 +38,16 @@ public class UserApplication : IUserApplication
 
         return Response.OK(response);
     }
+
+    public async Task<Response<List<BookCheckoutResponse>>> ListBooksCheckoutUser(int user_id)
+    {
+        Response<List<BookCheckout>> bookCheckout = await _userService.ListAllBooksCheckoutUserAsync(user_id);
+
+        if (bookCheckout.Report.Any())
+            return Response.Unprocessable<List<BookCheckoutResponse>>(bookCheckout.Report);
+
+        var response = _mapper.Map<List<BookCheckoutResponse>>(bookCheckout.Data);
+
+        return Response.OK(response);
+    }
 }
