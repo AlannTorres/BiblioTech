@@ -16,7 +16,7 @@ public static class SwaggerExtensions
                 TermsOfService = new Uri("https://example.com/terms")
             });
 
-            var xmlApiPath = Path.Combine(AppContext.BaseDirectory, $"{typeof(StartupBase).Assembly.GetName().Name}.xml");
+            var xmlApiPath = Path.Combine(AppContext.BaseDirectory, $"{typeof(Program).Assembly.GetName().Name}.xml");
 
             c.IncludeXmlComments(xmlApiPath);
         });

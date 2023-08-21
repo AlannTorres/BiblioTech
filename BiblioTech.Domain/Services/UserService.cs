@@ -87,9 +87,9 @@ public class UserService : IUserService
         return response;
     } // Feito
 
-    async Task<Response<List<object>>> IUserService.ListAllBooksCheckoutUserAsync(int user_id)
+    async Task<Response<List<BookCheckout>>> IUserService.ListAllBooksCheckoutUserAsync(int user_id)
     {
-        var response = new Response<List<object>>();
+        var response = new Response<List<BookCheckout>>();
 
         var exist = await _userRepository.GetUserByIdAsync(user_id);
 
@@ -106,9 +106,9 @@ public class UserService : IUserService
         return response;
     } // Feito
 
-    async Task<Response<List<object>>> IUserService.ListAllBooksReserveUserAsync(int user_id)
+    async Task<Response<List<BookReserve>>> IUserService.ListAllBooksReserveUserAsync(int user_id)
     {
-        var response = new Response<List<object>>();
+        var response = new Response<List<BookReserve>>();
 
         var exist = await _userRepository.GetUserByIdAsync(user_id);
 
@@ -119,36 +119,6 @@ public class UserService : IUserService
         }
 
         var data = await _userRepository.ListAllBooksReserveUserAsync(user_id);
-
-        response.Data = data;
-
-        return response;
-    } // Feito
-
-    async Task<Response<List<BookCheckout>>> IUserService.ListAllBooksUserAsync(int user_id)
-    {
-        var response = new Response<List<BookCheckout>>();
-
-        var exist = await _userRepository.GetUserByIdAsync(user_id);
-
-        if (exist.Equals(null))
-        {
-            response.Report.Add(Report.Create($"Usuario {user_id} not exist"));
-            return response;
-        }
-
-        var data = await _userRepository.ListAllBooksUserAsync(user_id);
-
-        response.Data = data;
-
-        return response;
-    } // Feito
-
-    async Task<Response<List<User>>> IUserService.ListAllUsersAsync()
-    {
-        var response = new Response<List<User>>();
-
-        var data = await _userRepository.ListAllUsersAsync();
 
         response.Data = data;
 
