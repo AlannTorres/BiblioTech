@@ -4,7 +4,7 @@ namespace BiblioTech.Interfaces.Repositories;
 
 public interface IBookReserveRepository
 {
-    Task<IEnumerable<BookReserve>> ListAllReserveAsync();
+    Task<List<BookReserve>> ListAllBookReserveByFilterAsync(string book_name = null, string user_name = null);
     Task CreateReserveAsync(BookReserve bookReserve);
-    Task CloseReserveAsync(int reservationId);
+    Task CloseReserveAsync(string reserve_id);
 }

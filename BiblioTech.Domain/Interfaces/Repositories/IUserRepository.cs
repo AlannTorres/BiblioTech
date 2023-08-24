@@ -11,7 +11,7 @@ public interface IUserRepository
     Task DeleteAsync(string user_id);
     Task<bool> ExistsByCpfAsync(string Cpf);
     Task<List<object>> VerifyUserPendingAsync(string user_id);
-    Task<List<User>> ListByFilterAsync(string user_id = null, string name = null);
+    Task<List<User>> ListAllUsersByFilterAsync(string user_id = null, string name = null);
     Task<List<BookCheckout>> ListAllBooksCheckoutUserAsync(string user_id);
     Task<List<BookReserve>> ListAllBooksReserveUserAsync(string user_id);
 }
