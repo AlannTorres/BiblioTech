@@ -1,4 +1,5 @@
 ﻿using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 
 namespace BiblioTech.Api.Extensions;
 
@@ -16,7 +17,18 @@ public static class SwaggerExtensions
                 TermsOfService = new Uri("https://example.com/terms")
             });
 
-            var xmlApiPath = Path.Combine(AppContext.BaseDirectory, $"{typeof(Program).Assembly.GetName().Name}.xml");
+            c.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme()
+            {
+                Description = "Beared token",
+                In = ParameterLocation.Header,
+                Name = "Authorization",
+                Type = SecuritySchemeType.ApiKey
+            });
+
+            c.OperationFilter<SecurityRequirementsOperationFilter>();
+
+            var xmlApiPath = Path.Combine(Directory.GetCurrentDirectory(), $"{typeof(Program).Assembly.GetName().Name}.xml");
+
 
             c.IncludeXmlComments(xmlApiPath);
         });

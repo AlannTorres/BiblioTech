@@ -14,8 +14,9 @@ public class Core : Profile
 
     private void UserMap()
     {
-        CreateMap<CreateUserRequest, User>();
-
+        CreateMap<CreateUserRequest, User>()
+            .ForMember(target => target.PasswordHash,
+                       opt => opt.MapFrom(source => source.Password));
         CreateMap<User, UserResponse>();
 
         CreateMap<BookCheckout, BookCheckoutResponse>();

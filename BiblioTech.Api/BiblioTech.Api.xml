@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<doc>
+	<assembly>
+		<name>BiblioTech.Api</name>
+	</assembly>
+	<members>
+		<member name="M:BiblioTech.Api.Controllers.UserController.GetUsers(System.String,System.String)">
+			<summary>
+				Get all users
+			</summary>
+			<param name="user_id"></param>
+			<param name="name"></param>
+			<returns></returns>
+		</member>
+	</members>
+</doc>

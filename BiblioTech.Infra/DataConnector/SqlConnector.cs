@@ -14,11 +14,25 @@ public class SqlConnector : IDbConnector
 
     public IDbConnection DbConnection { get; }
 
-    public IDbTransaction Dbtransaction { get;  set; }
+    public IDbTransaction DbTransaction { get;  set; }
+
+    public IDbTransaction BeginTransaction(IsolationLevel isolation)
+    {
+        if (DbTransaction != null)
+        {
+            return DbTransaction;
+        }
+
+        if (DbConnection.State == ConnectionState.Closed)
+        {
+            DbConnection.Open();
+        }
+        return (DbTransaction = DbConnection.BeginTransaction(isolation));
+    }
 
     public void Dispose()
     {
         DbConnection?.Dispose();
-        Dbtransaction?.Dispose();
+        DbTransaction?.Dispose();
     }
 }

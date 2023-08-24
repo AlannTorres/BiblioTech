@@ -4,12 +4,14 @@ namespace BiblioTech.Interfaces.Repositories;
 
 public interface IUserRepository
 {
-    Task<User> GetUserByIdAsync(int user_id);
+    Task<User> GetUserByIdAsync(string user_id);
+    Task<User> GetUserByEmailAsync(string user_email);
     Task CreateAsync(User user);
     Task UpdateAsync(User user);
-    Task DeleteAsync(int user_id);
+    Task DeleteAsync(string user_id);
     Task<bool> ExistsByCpfAsync(string Cpf);
-    Task<List<object>> VerifyUserPendingAsync(int user_id);
-    Task<List<BookCheckout>> ListAllBooksCheckoutUserAsync(int user_id);
-    Task<List<BookReserve>> ListAllBooksReserveUserAsync(int user_id);
+    Task<List<object>> VerifyUserPendingAsync(string user_id);
+    Task<List<User>> ListByFilterAsync(string user_id = null, string name = null);
+    Task<List<BookCheckout>> ListAllBooksCheckoutUserAsync(string user_id);
+    Task<List<BookReserve>> ListAllBooksReserveUserAsync(string user_id);
 }

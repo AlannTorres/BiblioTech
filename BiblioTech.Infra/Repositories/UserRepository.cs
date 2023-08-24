@@ -17,12 +17,12 @@ public class UserRepository : IUserRepository
     public async Task CreateAsync(User user)
     {
         string sql = @"INSERT INTO
-                       Users (Password, Name, CPF, Email, Telephone, Address) 
-                       VALUES (@Password, @Name, @CPF, @Email, @Telephone, @Address)";
+                       Users (passwordHash, name, CPF, email, telephone, address) 
+                       VALUES (@passwordHash, @name, @CPF, @email, @telephone, @address)";
 
         var param = new
         {
-            user.Password,
+            user.PasswordHash,
             user.Name,
             user.CPF,
             user.Email,
@@ -31,7 +31,7 @@ public class UserRepository : IUserRepository
         };
 
         await _dbConnector.DbConnection
-            .ExecuteAsync(sql, param, _dbConnector.Dbtransaction);
+            .ExecuteAsync(sql, param, _dbConnector.DbTransaction);
     }
 
     public async Task UpdateAsync(User user)
@@ -39,7 +39,7 @@ public class UserRepository : IUserRepository
         throw new NotImplementedException();
     }
 
-    public async Task DeleteAsync(int user_id)
+    public async Task DeleteAsync(string user_id)
     {
         throw new NotImplementedException();
     }
@@ -49,22 +49,22 @@ public class UserRepository : IUserRepository
         string sql = "SELECT 1 FROM Users WHERE CPF = @Cpf";
 
         var user = await _dbConnector.DbConnection.
-            QueryAsync<bool>(sql, new { Cpf }, _dbConnector.Dbtransaction);
+            QueryAsync<bool>(sql, new { Cpf }, _dbConnector.DbTransaction);
 
         return user.FirstOrDefault();
     } // Feito
 
-    public async Task<User> GetUserByIdAsync(int user_id)
+    public async Task<User> GetUserByIdAsync(string user_id)
     {
         string sql = "SELECT * FROM Users WHERE id = @user_id";
 
         var user = await _dbConnector.DbConnection.
-            QuerySingleAsync<User>(sql, new { user_id }, _dbConnector.Dbtransaction);
+            QuerySingleAsync<User>(sql, new { user_id }, _dbConnector.DbTransaction);
 
         return user;
     } // Feito
 
-    public async Task<List<BookCheckout>> ListAllBooksCheckoutUserAsync(int user_id)
+    public async Task<List<BookCheckout>> ListAllBooksCheckoutUserAsync(string user_id)
     {
         string sql = @"
              SELECT 
@@ -91,18 +91,45 @@ public class UserRepository : IUserRepository
             },
             param: new { user_id },
             splitOn: "id",
-            transaction: _dbConnector.Dbtransaction);
+            transaction: _dbConnector.DbTransaction);
 
         return booksCheckout.ToList();
     }
 
-    public async Task<List<BookReserve>> ListAllBooksReserveUserAsync(int user_id)
+    public async Task<List<BookReserve>> ListAllBooksReserveUserAsync(string user_id)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<List<object>> VerifyUserPendingAsync(int user_id)
+    public async Task<List<object>> VerifyUserPendingAsync(string user_id)
     {
         throw new NotImplementedException();
+    }
+
+    public async Task<List<User>> ListByFilterAsync(string user_id = null, string name = null)
+    {
+        string sql = @"SELECT * FROM Users
+                       WHERE 1 = 1";
+
+        if (!string.IsNullOrWhiteSpace(user_id))
+            sql += " AND id = @Id";
+
+        if (!string.IsNullOrWhiteSpace(name))
+            sql += " AND name like @Name";
+
+        var users = await _dbConnector.DbConnection
+            .QueryAsync<User>(sql, new { Id = user_id, Name = $"%{name}%" }, _dbConnector.DbTransaction);
+
+        return users.ToList();
+    }
+
+    public async Task<User> GetUserByEmailAsync(string user_email)
+    {
+        string sql = "SELECT * FROM Users WHERE email = @user_email";
+
+        var user = await _dbConnector.DbConnection.
+            QuerySingleAsync<User>(sql, new { user_email }, _dbConnector.DbTransaction);
+
+        return user;
     }
 }

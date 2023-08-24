@@ -34,7 +34,7 @@ public class UnitOfWork : IUnitOfWork
     {
         if (DbConnector.DbConnection.State == System.Data.ConnectionState.Open)
         {
-            DbConnector.Dbtransaction = DbConnector.DbConnection.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted);
+            DbConnector.DbTransaction = DbConnector.DbConnection.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted);
         }
     }
 
@@ -42,7 +42,7 @@ public class UnitOfWork : IUnitOfWork
     {
         if (DbConnector.DbConnection.State == System.Data.ConnectionState.Open)
         {
-            DbConnector.Dbtransaction.Commit();
+            DbConnector.DbTransaction.Commit();
         }
     }
 
@@ -50,7 +50,7 @@ public class UnitOfWork : IUnitOfWork
     {
         if (DbConnector.DbConnection.State == System.Data.ConnectionState.Open)
         {
-            DbConnector.Dbtransaction.Rollback();
+            DbConnector.DbTransaction.Rollback();
         }
     }
 }

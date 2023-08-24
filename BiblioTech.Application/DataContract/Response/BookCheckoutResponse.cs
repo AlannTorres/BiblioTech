@@ -1,14 +1,14 @@
-﻿using BiblioTech.Domain.Enum;
-using BiblioTech.Domain;
+﻿using BiblioTech.Domain;
 
 namespace BiblioTech.Application.DataContract.Response;
 
 public sealed class BookCheckoutResponse
 {
-    public long Id { get; set; }
-    public long BookId { get; set; }
+    public string? Id { get; set; }
+    public Book? Book { get; set; }
     public string? BookTitle { get; set; }
-    public long UserId { get; set; }
+    public User? User { get; set; }
+    public string? UserName { get; set; }
     public DateTime Checkout_Date { get; set; }
     public DateTime Due_Date { get; set; }
     public string? Status_Checkout { get; set; }

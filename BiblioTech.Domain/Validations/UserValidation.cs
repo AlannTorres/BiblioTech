@@ -15,7 +15,7 @@ namespace BiblioTech.Domain.Validations
                 .MaximumLength(100).WithMessage("O campo e-mail não pode ter mais de 100 caracteres.")
                 .EmailAddress().WithMessage("O campo e-mail não é um endereço de e-mail válido.");
 
-            RuleFor(x => x.Password)
+            RuleFor(x => x.PasswordHash)
                 .NotEmpty().WithMessage("O campo senha é obrigatório.");
 
             RuleFor(x => x.Telephone)
