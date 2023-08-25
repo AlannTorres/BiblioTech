@@ -64,7 +64,7 @@ public class UserRepository : IUserRepository
         return user;
     } // Feito
 
-    public async Task<List<BookCheckout>> ListAllBooksCheckoutUserAsync(string user_id)
+    public async Task<List<Loan>> ListAllBooksCheckoutUserAsync(string user_id)
     {
         string sql = @"
              SELECT 
@@ -81,7 +81,7 @@ public class UserRepository : IUserRepository
              WHERE bc.user_id = @user_id
              ORDER BY bc.due_Date";
 
-        var booksCheckout = await _dbConnector.DbConnection.QueryAsync<BookCheckout, Book, User, BookCheckout>(
+        var booksCheckout = await _dbConnector.DbConnection.QueryAsync<Loan, Book, User, Loan>(
             sql: sql,
             map: (bookCheckout, book, user) =>
             {
@@ -96,7 +96,7 @@ public class UserRepository : IUserRepository
         return booksCheckout.ToList();
     }
 
-    public async Task<List<BookReserve>> ListAllBooksReserveUserAsync(string user_id)
+    public async Task<List<Reserve>> ListAllBooksReserveUserAsync(string user_id)
     {
         throw new NotImplementedException();
     }

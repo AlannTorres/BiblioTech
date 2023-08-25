@@ -83,7 +83,7 @@ public class UserApplication : IUserApplication
 
     public async Task<Response<List<BookCheckoutResponse>>> ListBooksCheckoutUser(string user_id)
     {
-        Response<List<BookCheckout>> bookCheckout = await _userService.ListAllBooksCheckoutUserAsync(user_id);
+        Response<List<Loan>> bookCheckout = await _userService.ListAllBooksCheckoutUserAsync(user_id);
 
         if (bookCheckout.Report.Any())
             return Response.Unprocessable<List<BookCheckoutResponse>>(bookCheckout.Report);

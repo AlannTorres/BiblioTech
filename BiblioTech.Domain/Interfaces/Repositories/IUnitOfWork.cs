@@ -6,8 +6,9 @@ namespace BiblioTech.Domain.Interfaces.Repositories;
 public interface IUnitOfWork
 {
     IUserRepository UserRepository { get; }
-    IBookReserveRepository BookReserveRepository { get; }
-    IBookCheckoutRepository BookCheckoutRepository { get; }
+    IEmployeeRepository EmployeeRepository { get; }
+    IReserveRepository ReserveRepository { get; }
+    ILoanRepository LoanRepository { get; }
     IBookRepository BookRepository { get; }
 
     IDbConnector DbConnector { get; }

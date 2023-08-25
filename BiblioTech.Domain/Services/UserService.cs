@@ -1,54 +1,33 @@
-﻿using BiblioTech.Domain.Common.Interfaces;
-using BiblioTech.Domain.Interface.Services;
+﻿using BiblioTech.Domain.Interface.Services;
+using BiblioTech.Domain.Interfaces.Repositories;
 using BiblioTech.Domain.Interfaces.Services;
 using BiblioTech.Domain.Validations;
 using BiblioTech.Domain.Validations.Base;
-using BiblioTech.Interfaces.Repositories;
 
 namespace BiblioTech.Domain.Services;
 
 public class UserService : IUserService
 {
-    private readonly IUserRepository _userRepository;
-    private readonly IGenerators _generators;
+    private readonly IUnitOfWork _unitOfWork;
     private readonly ISecurityService _securityService;
 
-    public UserService(IUserRepository userRepository,
-                       IGenerators generators,
+    public UserService(IUnitOfWork unitOfWork,
                        ISecurityService securityService)
     {
-        _userRepository = userRepository;
-        _generators = generators;
+        _unitOfWork = unitOfWork;
         _securityService = securityService;
     }
 
     public async Task<Response<bool>> AutheticationAsync(string password, User user)
     {
         return await _securityService.VerifyPassword(password, user);
-    } // Feito
-
-    public async Task<Response<User>> GetUserByIdAsync(string user_id)
-    {
-        var response = new Response<User>();
-
-        var data = await _userRepository.GetUserByIdAsync(user_id);
-
-        if (data.Equals(null))
-        {
-            response.Report.Add(Report.Create($"User {user_id} not exist"));
-            return response;
-        }
-
-        response.Data = data;
-
-        return response;
-    } // Feito
+    } // Feito 
 
     public async Task<Response<User>> GetUserByEmailAsync(string user_email)
     {
         var response = new Response<User>();
 
-        var data = await _userRepository.GetUserByEmailAsync(user_email);
+        var data = await _unitOfWork.UserRepository.GetUserByEmailAsync(user_email);
 
         if (data.Equals(null))
         {
@@ -59,7 +38,7 @@ public class UserService : IUserService
         response.Data = data;
 
         return response;
-    } // Feito
+    }
 
     public async Task<Response> CreateAsync(User user)
     {
@@ -70,12 +49,10 @@ public class UserService : IUserService
 
         if (errors.Report.Count > 0) { return errors; }
 
-        //user.Id = _generators.Generate();
-
-        await _userRepository.CreateAsync(user);
+        await _unitOfWork.UserRepository.CreateAsync(user);
 
         return response;
-    } // Feito
+    }
 
     public async Task<Response> UpdateAsync(User user)
     {
@@ -85,7 +62,7 @@ public class UserService : IUserService
 
         if (errors.Report.Count > 0) return errors;
 
-        var exists = await _userRepository.ExistsByCpfAsync(user.CPF);
+        var exists = await _unitOfWork.UserRepository.ExistsByCpfAsync(user.CPF);
 
         if (!exists) 
         { 
@@ -93,16 +70,16 @@ public class UserService : IUserService
             return response;
         }
 
-        await _userRepository.UpdateAsync(user);
+        await _unitOfWork.UserRepository.UpdateAsync(user);
 
         return response;
-    } // Feito
+    }
 
     public async Task<Response> DeleteAsync(string user_id)
     {
         var response = new Response();
 
-        var exists = await _userRepository.GetUserByIdAsync(user_id);
+        var exists = await _unitOfWork.UserRepository.GetUserByIdAsync(user_id);
 
         if (exists.Equals(null))
         {
@@ -110,16 +87,16 @@ public class UserService : IUserService
             return response;
         }
 
-        await _userRepository.DeleteAsync(user_id);
+        await _unitOfWork.UserRepository.DeleteAsync(user_id);
 
         return response;
-    } // Feito
+    }
 
-    public async Task<Response<List<BookCheckout>>> ListAllBooksCheckoutUserAsync(string user_id)
+    public async Task<Response<List<Loan>>> ListAllBooksCheckoutUserAsync(string user_id)
     {
-        var response = new Response<List<BookCheckout>>();
+        var response = new Response<List<Loan>>();
 
-        var exist = await _userRepository.GetUserByIdAsync(user_id);
+        var exist = await _unitOfWork.UserRepository.GetUserByIdAsync(user_id);
 
         if (exist.Equals(null))
         {
@@ -127,18 +104,18 @@ public class UserService : IUserService
             return response;
         }
 
-        var data = await _userRepository.ListAllBooksCheckoutUserAsync(user_id);
+        var data = await _unitOfWork.UserRepository.ListAllBooksCheckoutUserAsync(user_id);
 
         response.Data = data;
 
         return response;
-    } // Feito
+    }
 
-    public async Task<Response<List<BookReserve>>> ListAllBooksReserveUserAsync(string user_id)
+    public async Task<Response<List<Reserve>>> ListAllBooksReserveUserAsync(string user_id)
     {
-        var response = new Response<List<BookReserve>>();
+        var response = new Response<List<Reserve>>();
 
-        var exist = await _userRepository.GetUserByIdAsync(user_id);
+        var exist = await _unitOfWork.UserRepository.GetUserByIdAsync(user_id);
 
         if (exist.Equals(null))
         {
@@ -146,12 +123,12 @@ public class UserService : IUserService
             return response;
         }
 
-        var data = await _userRepository.ListAllBooksReserveUserAsync(user_id);
+        var data = await _unitOfWork.UserRepository.ListAllBooksReserveUserAsync(user_id);
 
         response.Data = data;
 
         return response;
-    } // Feito
+    }
 
     public async Task<Response<List<User>>> ListByFilterAsync(string user_id = null, string name = null)
     {
@@ -159,7 +136,7 @@ public class UserService : IUserService
 
         if (!string.IsNullOrWhiteSpace(user_id))
         {
-            var exists = await _userRepository.GetUserByIdAsync(user_id);
+            var exists = await _unitOfWork.UserRepository.GetUserByIdAsync(user_id);
 
             if (exists.Equals(null))
             {
@@ -168,10 +145,10 @@ public class UserService : IUserService
             }
         }
 
-        var data = await _userRepository.ListByFilterAsync(user_id, name);
+        var data = await _unitOfWork.UserRepository.ListAllUsersByFilterAsync(user_id, name);
         response.Data = data;
 
         return response;
-    } // Feito
+    }
 
 }

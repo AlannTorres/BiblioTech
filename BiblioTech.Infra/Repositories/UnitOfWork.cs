@@ -19,10 +19,10 @@ public class UnitOfWork : IUnitOfWork
     public IUserRepository UserRepository => 
         _userRepository ??= new UserRepository(DbConnector);
 
-    public IBookReserveRepository BookReserveRepository => 
+    public IReserveRepository BookReserveRepository => 
         throw new NotImplementedException();
 
-    public IBookCheckoutRepository BookCheckoutRepository => 
+    public ILoanRepository BookCheckoutRepository => 
         throw new NotImplementedException();
 
     public IBookRepository BookRepository => 

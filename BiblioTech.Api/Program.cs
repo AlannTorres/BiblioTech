@@ -21,7 +21,7 @@ var authSettingsSection = builder.Configuration.GetSection("AuthSettings");
 builder.Services.Configure<AuthSettings>(authSettingsSection);
 
 var authSettings = authSettingsSection.Get<AuthSettings>();
-SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(authSettings.Secret));
+SymmetricSecurityKey key = new (Encoding.UTF8.GetBytes(authSettings.Secret));
 
 builder.Services.JWT(key);
 
@@ -29,7 +29,6 @@ builder.Services.JWT(key);
 builder.Services.RegisterIoC();
 
 builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
 builder.Services.SwaggerConfiguration();
 
 var app = builder.Build();

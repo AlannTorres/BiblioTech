@@ -19,6 +19,6 @@ public class Core : Profile
                        opt => opt.MapFrom(source => source.Password));
         CreateMap<User, UserResponse>();
 
-        CreateMap<BookCheckout, BookCheckoutResponse>();
+        CreateMap<Loan, BookCheckoutResponse>();
     }
 }
