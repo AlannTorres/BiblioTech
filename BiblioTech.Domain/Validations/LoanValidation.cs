@@ -7,18 +7,15 @@ public class LoanValidation : AbstractValidator<Loan>
     public LoanValidation()
     {
         RuleFor(x => x.User)
-            .NotEmpty();
+            .NotNull();
 
         RuleFor(x => x.Books)
-            .NotEmpty();
+            .NotNull();
 
         RuleFor(x => x.Loan_Date)
-            .NotEmpty();
-
-        RuleFor(x => x.Due_Date)
-            .NotEmpty();
+            .NotNull();
 
         RuleFor(x => x.Status_Checkout)
-            .NotEmpty();
+            .NotNull();
     }
 }

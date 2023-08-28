@@ -7,9 +7,9 @@ namespace BiblioTech.Infra.Repositories;
 public class UnitOfWork : IUnitOfWork
 {
     private IUserRepository _userRepository;
-    //private IBookRepository _bookRepository;
-    //private IBookCheckoutRepository _bookCheckoutRepository;
-    //private IBookReserveRepository _bookReserveRepository;
+    private IBookRepository _bookRepository;
+    private ILoanRepository _loanRepository;
+    private IReserveRepository _reserveRepository;
 
     public UnitOfWork(IDbConnector dbConnector)
     {
@@ -19,23 +19,20 @@ public class UnitOfWork : IUnitOfWork
     public IUserRepository UserRepository => 
         _userRepository ??= new UserRepository(DbConnector);
 
-    public IReserveRepository BookReserveRepository => 
-        throw new NotImplementedException();
+    public IReserveRepository ReserveRepository => 
+        _reserveRepository ??= new ReserveRepository(DbConnector);
 
-    public ILoanRepository BookCheckoutRepository => 
-        throw new NotImplementedException();
+    public ILoanRepository LoanRepository => 
+        _loanRepository ??= new LoanRepository(DbConnector);
 
-    public IBookRepository BookRepository => 
-        throw new NotImplementedException();
+    public IBookRepository BookRepository =>
+        _bookRepository ??= new BookRepository(DbConnector);
 
     public IDbConnector DbConnector { get; }
 
     public void BeginTransaction()
     {
-        if (DbConnector.DbConnection.State == System.Data.ConnectionState.Open)
-        {
-            DbConnector.DbTransaction = DbConnector.DbConnection.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted);
-        }
+        DbConnector.DbConnection.BeginTransaction(System.Data.IsolationLevel.ReadUncommitted);
     }
 
     public void CommitTransaction()

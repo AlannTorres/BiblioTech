@@ -3,7 +3,7 @@
 public enum LoanEnum
 {
     Pending = 0,
-    Returned
+    Returned = 1
 }
 
 public static class BookCheckoutEnumExtensions

@@ -1,6 +1,7 @@
 ﻿using BiblioTech.Domain.Interface.Services;
 using BiblioTech.Domain.Interfaces.Repositories;
 using BiblioTech.Domain.Interfaces.Services;
+using BiblioTech.Domain.Models;
 using BiblioTech.Domain.Validations;
 using BiblioTech.Domain.Validations.Base;
 
@@ -21,7 +22,7 @@ public class UserService : IUserService
     public async Task<Response<bool>> AutheticationAsync(string password, User user)
     {
         return await _securityService.VerifyPassword(password, user);
-    } // Feito 
+    } 
 
     public async Task<Response<User>> GetUserByEmailAsync(string user_email)
     {
@@ -40,7 +41,7 @@ public class UserService : IUserService
         return response;
     }
 
-    public async Task<Response> CreateAsync(User user)
+    public async Task<Response> CreateUserAsync(User user)
     {
         var response = new Response();
 
@@ -49,12 +50,12 @@ public class UserService : IUserService
 
         if (errors.Report.Count > 0) { return errors; }
 
-        await _unitOfWork.UserRepository.CreateAsync(user);
+        await _unitOfWork.UserRepository.CreateUserAsync(user);
 
         return response;
     }
 
-    public async Task<Response> UpdateAsync(User user)
+    public async Task<Response> UpdateUserAsync(User user, string user_email)
     {
         var response = new Response();
         var validation = new UserValidation();
@@ -62,93 +63,159 @@ public class UserService : IUserService
 
         if (errors.Report.Count > 0) return errors;
 
-        var exists = await _unitOfWork.UserRepository.ExistsByCpfAsync(user.CPF);
+        var exists = await _unitOfWork.UserRepository.GetUserByEmailAsync(user_email);
 
-        if (!exists) 
+        if (exists.Equals(null)) 
         { 
-            response.Report.Add(Report.Create($"Usuario {user.Name} not exist"));
+            response.Report.Add(Report.Create($"Usuario com email:{user_email} não existe"));
             return response;
         }
 
-        await _unitOfWork.UserRepository.UpdateAsync(user);
+        await _unitOfWork.UserRepository.UpdateUserAsync(user, user_email);
 
         return response;
     }
 
-    public async Task<Response> DeleteAsync(string user_id)
+    public async Task<Response> DeleteUserAsync(string user_email)
     {
         var response = new Response();
 
-        var exists = await _unitOfWork.UserRepository.GetUserByIdAsync(user_id);
+        var exists = await _unitOfWork.UserRepository.GetUserByEmailAsync(user_email);
 
         if (exists.Equals(null))
         {
-            response.Report.Add(Report.Create($"Usuario {user_id} not exist"));
+            response.Report.Add(Report.Create($"Usuario {user_email} not exist"));
             return response;
         }
 
-        await _unitOfWork.UserRepository.DeleteAsync(user_id);
+        await _unitOfWork.UserRepository.DeleteUserAsync(user_email);
 
         return response;
     }
 
-    public async Task<Response<List<Loan>>> ListAllBooksCheckoutUserAsync(string user_id)
-    {
-        var response = new Response<List<Loan>>();
-
-        var exist = await _unitOfWork.UserRepository.GetUserByIdAsync(user_id);
-
-        if (exist.Equals(null))
-        {
-            response.Report.Add(Report.Create($"Usuario {user_id} not exist"));
-            return response;
-        }
-
-        var data = await _unitOfWork.UserRepository.ListAllBooksCheckoutUserAsync(user_id);
-
-        response.Data = data;
-
-        return response;
-    }
-
-    public async Task<Response<List<Reserve>>> ListAllBooksReserveUserAsync(string user_id)
-    {
-        var response = new Response<List<Reserve>>();
-
-        var exist = await _unitOfWork.UserRepository.GetUserByIdAsync(user_id);
-
-        if (exist.Equals(null))
-        {
-            response.Report.Add(Report.Create($"Usuario {user_id} not exist"));
-            return response;
-        }
-
-        var data = await _unitOfWork.UserRepository.ListAllBooksReserveUserAsync(user_id);
-
-        response.Data = data;
-
-        return response;
-    }
-
-    public async Task<Response<List<User>>> ListByFilterAsync(string user_id = null, string name = null)
+    public async Task<Response<List<User>>> ListEmployeesByFilterAsync(string user_email = null, string name = null)
     {
         var response = new Response<List<User>>();
 
-        if (!string.IsNullOrWhiteSpace(user_id))
+        if (!string.IsNullOrWhiteSpace(user_email))
         {
-            var exists = await _unitOfWork.UserRepository.GetUserByIdAsync(user_id);
+            var exists = await _unitOfWork.UserRepository.GetUserByEmailAsync(user_email);
 
             if (exists.Equals(null))
             {
-                response.Report.Add(Report.Create($"User {user_id} not exists!"));
+                response.Report.Add(Report.Create($"Usuario com email: {user_email} não existe!"));
                 return response;
             }
         }
 
-        var data = await _unitOfWork.UserRepository.ListAllUsersByFilterAsync(user_id, name);
+        var data = await _unitOfWork.UserRepository.ListEmployeesByFilterAsync(user_email, name);
         response.Data = data;
 
         return response;
     }
 
+    public async Task<Response<List<Loan>>> ListAllLoanEmployeesAsync(string user_email)
+    {
+        var response = new Response<List<Loan>>();
+
+        if (!string.IsNullOrWhiteSpace(user_email))
+        {
+            var exists = await _unitOfWork.UserRepository.GetUserByEmailAsync(user_email);
+
+            if (exists.Equals(null))
+            {
+                response.Report.Add(Report.Create($"Usuario com email: {user_email} não existe!"));
+                return response;
+            }
+        }
+
+        var data = await _unitOfWork.UserRepository.ListAllLoanEmployeeAsync(user_email);
+        response.Data = data;
+
+        return response;
+    }
+
+    public async Task<Response<List<Reserve>>> ListAllReserveEmployeesAsync(string user_email)
+    {
+        var response = new Response<List<Reserve>>();
+
+        if (!string.IsNullOrWhiteSpace(user_email))
+        {
+            var exists = await _unitOfWork.UserRepository.GetUserByEmailAsync(user_email);
+
+            if (exists.Equals(null))
+            {
+                response.Report.Add(Report.Create($"Usuario com email: {user_email} não existe!"));
+                return response;
+            }
+        }
+
+        var data = await _unitOfWork.UserRepository.ListAllReserveEmployeeAsync(user_email);
+        response.Data = data;
+
+        return response;
+    }
+
+    public async Task<Response<List<User>>> ListClientsByFilterAsync(string user_email = null, string name = null)
+    {
+        var response = new Response<List<User>>();
+
+        if (!string.IsNullOrWhiteSpace(user_email))
+        {
+            var exists = await _unitOfWork.UserRepository.GetUserByEmailAsync(user_email);
+
+            if (exists.Equals(null))
+            {
+                response.Report.Add(Report.Create($"Usuario com email: {user_email} não existe!"));
+                return response;
+            }
+        }
+
+        var data = await _unitOfWork.UserRepository.ListClientsByFilterAsync(user_email, name);
+        response.Data = data;
+
+        return response;
+    }
+
+    public async Task<Response<List<BookLoan>>> ListAllBooksClientAsync(string user_email)
+    {
+        var response = new Response<List<BookLoan>>();
+
+        if (!string.IsNullOrWhiteSpace(user_email))
+        {
+            var exists = await _unitOfWork.UserRepository.GetUserByEmailAsync(user_email);
+
+            if (exists.Equals(null))
+            {
+                response.Report.Add(Report.Create($"Usuario com email: {user_email} não existe!"));
+                return response;
+            }
+        }
+
+        var data = await _unitOfWork.UserRepository.ListAllBooksClientAsync(user_email);
+        response.Data = data;
+
+        return response;
+    }
+
+    public async Task<Response<List<Reserve>>> ListAllReserveClientAsync(string user_email)
+    {
+        var response = new Response<List<Reserve>>();
+
+        if (!string.IsNullOrWhiteSpace(user_email))
+        {
+            var exists = await _unitOfWork.UserRepository.GetUserByEmailAsync(user_email);
+
+            if (exists.Equals(null))
+            {
+                response.Report.Add(Report.Create($"Usuario com email: {user_email} não existe!"));
+                return response;
+            }
+        }
+
+        var data = await _unitOfWork.UserRepository.ListAllReserveClientAsync(user_email);
+        response.Data = data;
+
+        return response;
+    }
 }

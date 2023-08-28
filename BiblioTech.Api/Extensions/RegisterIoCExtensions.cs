@@ -2,8 +2,6 @@
 using BiblioTech.Application.Interfaces;
 using BiblioTech.Application.Interfaces.Security;
 using BiblioTech.Application.Security;
-using BiblioTech.Domain.Common.Interfaces;
-using BiblioTech.Domain.Common.Repositories;
 using BiblioTech.Domain.Interface.Services;
 using BiblioTech.Domain.Interfaces.Repositories;
 using BiblioTech.Domain.Interfaces.Services;
@@ -25,15 +23,19 @@ public static class RegisterIoCExtensions
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IUserRepository, UserRepository>();
 
-        services.AddScoped<IBookApplication, BookAplication>();
+        services.AddScoped<IBookApplication, BookApplication>();
+        services.AddScoped<IBookService, BookService>();
+        services.AddScoped<IBookRepository, BookRepository>();
 
-        services.AddScoped<IBookReserveApplication, BookReserveApplication>();
+        services.AddScoped<IReserveApplication, ReserveApplication>();
+        services.AddScoped<IReserveService, ReserveService>();
+        services.AddScoped<IReserveRepository, ReserveRepository>();
 
-        services.AddScoped<IBookCheckoutApplication, BookCheckoutApplication>();
+        services.AddScoped<ILoanApplication, LoanApplication>();
+        services.AddScoped<ILoanService, LoanService>();
+        services.AddScoped<ILoanRepository, LoanRepository>();
 
         // Commons
-        services.AddScoped<IGenerators, Generators>();
-
         services.AddScoped<ISecurityService, SecurityService>();
 
         services.AddScoped<ITokenManager, TokenManager>();

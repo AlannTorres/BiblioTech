@@ -2,7 +2,7 @@
 
 public class Book : BaseEntity
 {
-    public long ISBN { get; set; }
+    public string ISBN { get; set; }
     public string? Title { get; set; }
     public string? Description { get; set; }
     public int Year_publication { get; set; }

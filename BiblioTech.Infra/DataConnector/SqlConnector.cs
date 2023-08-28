@@ -27,6 +27,7 @@ public class SqlConnector : IDbConnector
         {
             DbConnection.Open();
         }
+
         return (DbTransaction = DbConnection.BeginTransaction(isolation));
     }
 

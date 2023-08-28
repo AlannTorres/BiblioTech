@@ -15,4 +15,8 @@
     <ProjectReference Include="..\BiblioTech.Domain\BiblioTech.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Repositories\NovaPasta\" />
+  </ItemGroup>
+
 </Project>

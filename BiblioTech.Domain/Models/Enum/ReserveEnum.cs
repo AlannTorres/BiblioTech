@@ -3,7 +3,7 @@
 public enum ReserveEnum
 {
     Active = 0,
-    Canceled
+    Canceled = 1
 }
 
 public static class BookReserverEnumExtensions

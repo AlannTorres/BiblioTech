@@ -25,7 +25,7 @@ namespace BiblioTech.Domain.Validations
             RuleFor(x => x.Telephone)
                 .NotEmpty().WithMessage("O campo telefone é obrigatório.");
 
-            RuleFor(x => x.Address)
+            RuleFor(x => x.Adress)
                 .NotEmpty().WithMessage("O campo endereço é obrigatório.");
 
         }

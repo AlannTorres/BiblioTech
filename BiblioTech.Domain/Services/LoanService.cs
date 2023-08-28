@@ -29,8 +29,11 @@ public class LoanService : ILoanService
         foreach (var book in loan.Books)
         {
             book.Loan = loan;
-            book.Load_Status = Enum.LoanEnum.Pending;
+            book.Loan_Status = Enum.LoanEnum.Pending;
             book.Devolution_Date = DateTime.Now + TimeSpan.FromDays(days);
+
+            int newquantity = await _unitOfWork.BookRepository.GetQuantityBookAsync(book.Book.Id);
+            await _unitOfWork.BookRepository.UpdateQuantityBookAsync(book.Book.Id, newquantity - 1);
         }
 
         await _unitOfWork.LoanRepository.CreateLoanAsync(loan);
@@ -50,45 +53,27 @@ public class LoanService : ILoanService
             return response;
         }
 
+        int newquantity = await _unitOfWork.BookRepository.GetQuantityBookAsync(book_id);
+        await _unitOfWork.BookRepository.UpdateQuantityBookAsync(book_id, newquantity + 1);
         await _unitOfWork.LoanRepository.RegisterReturnBookLoanAsync(user_email, book_id);
 
         return response;
     }
     
-    public async Task<Response<List<Loan>>> ListAllLoanByFilterAsync(string book_name = null, string user_name = null)
+    public async Task<Response<List<Loan>>> ListAllLoanByFilterAsync(string user_name = null)
     {
         var response = new Response<List<Loan>>();
-        _unitOfWork.BeginTransaction();
 
-        try
+        var data = await _unitOfWork.LoanRepository.ListAllLoanByFilterAsync(user_name);
+
+        if (data.Equals(null))
         {
-            var data = await _unitOfWork.LoanRepository.ListAllLoanByFilterAsync(book_name, user_name);
-
-            if (data.Equals(null))
-            {
-                response.Report.Add(Report.Create($"Nenhum empréstimo encontrado!"));
-                return response;
-            }
-
-            foreach (var loan in data)
-            {
-                loan.Books = await _unitOfWork.LoanRepository.ListBookLoanByLoanIdAsync(loan.Id);
-            }
-
-            _unitOfWork.CommitTransaction();
-
-            response.Data = data;
-
-            return response;
-        }
-        catch
-        {
-            _unitOfWork.RollbackTransaction();
-
+            response.Report.Add(Report.Create($"Nenhum empréstimo encontrado!"));
             return response;
         }
 
+        response.Data = data;
 
-
+        return response;
     }
 }

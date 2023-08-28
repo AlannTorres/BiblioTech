@@ -18,11 +18,21 @@ public class ReserveService : IReserveService
     {
         var response = new Response();
 
+        reserve.Status_Reserve = Enum.ReserveEnum.Active;
+
         var validation = new ReserveValidation();
         var errors = validation.Validate(reserve).GetErrors();
 
         if (errors.Report.Count > 0)
             return errors;
+
+        var quantity = await _unitOfWork.BookRepository.GetQuantityBookAsync(reserve.Book.Id);
+
+        if (quantity > 0)
+        {
+            response.Report.Add(Report.Create($"O livro de id: {reserve.Book.Id} ainda esta disponivel!"));
+            return response;
+        }
 
         reserve.Reserve_Date = DateTime.Now;
 

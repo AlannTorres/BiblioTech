@@ -7,7 +7,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Principal;
 using System.Text;
 
 namespace BiblioTech.Application.Security;
@@ -35,11 +34,12 @@ public class TokenManager : ITokenManager
             NotBefore = date,
             Expires = expire,
             SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature),
-                Subject = new ClaimsIdentity(new GenericIdentity(user.Email, JwtBearerDefaults.AuthenticationScheme), new[]
-            {
-                    new Claim(ClaimTypes.NameIdentifier, user.Id)
+            Subject = new ClaimsIdentity(new[]
+                {
+                    new Claim(ClaimTypes.Email, user.Email),
+                    new Claim(ClaimTypes.Role, user.Role)
                 })
-        });
+        }); 
 
         var response = new AuthResponse()
         {

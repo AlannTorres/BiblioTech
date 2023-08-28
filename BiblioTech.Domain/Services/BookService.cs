@@ -31,23 +31,6 @@ public class BookService : IBookService
         return response;
     }
 
-    public async Task<Response<Book>> GetBookByNameAsync(string book_name)
-    {
-        var response = new Response<Book>();
-
-        var data = await _unitOfWork.BookRepository.GetBookByNameAsync(book_name);
-
-        if (data.Equals(null))
-        {
-            response.Report.Add(Report.Create($"Livro com nome: {book_name}, não existe"));
-            return response;
-        }
-
-        response.Data = data;
-
-        return response;
-    }
-
     public async Task<Response> CreateBookAsync(Book book)
     {
         var response = new Response();
@@ -79,7 +62,7 @@ public class BookService : IBookService
         return response;
     }
 
-    public async Task<Response> UpdateBookAsync(Book book, string book_isbn)
+    public async Task<Response> UpdateBookAsync(Book book, string book_id)
     {
         var response = new Response();
         var validation = new BookValidation();
@@ -87,15 +70,15 @@ public class BookService : IBookService
 
         if (errors.Report.Count > 0) return errors;
 
-        var exists = await _unitOfWork.BookRepository.GetBookByISBNAsync(book.ISBN);
+        var exists = await _unitOfWork.BookRepository.GetBookByIdAsync(book_id);
 
         if (exists.Equals(null))
         {
-            response.Report.Add(Report.Create($"Livro com ISNB: {book_isbn}, não existe!"));
+            response.Report.Add(Report.Create($"Livro com id: {book_id}, não existe!"));
             return response;
         }
 
-        await _unitOfWork.BookRepository.UpdateBookAsync(book, book_isbn);
+        await _unitOfWork.BookRepository.UpdateBookAsync(book, book_id);
 
         return response;
     }
@@ -117,22 +100,18 @@ public class BookService : IBookService
         return response;
     }
 
-    public async Task<Response<List<Book>>> ListAllBooksByFilterAsync(string book_id = null, string book_name = null)
+    public async Task<Response<List<Book>>> ListAllBooksByFilterAsync(string? book_name = null)
     {
         var response = new Response<List<Book>>();
 
-        if (!string.IsNullOrWhiteSpace(book_id))
-        {
-            var exists = await _unitOfWork.BookRepository.GetBookByIdAsync(book_id);
+        var data = await _unitOfWork.BookRepository.ListAllBooksByFilterAsync(book_name);
 
-            if (exists.Equals(null))
-            {
-                response.Report.Add(Report.Create($"Livro com id: {book_id}, não existe!"));
-                return response;
-            }
+        if (data.Equals(null))
+        {
+            response.Report.Add(Report.Create($"Livro com nome: {book_name}, não existe!"));
+            return response;
         }
 
-        var data = await _unitOfWork.BookRepository.ListAllBooksByFilterAsync(book_name, book_name);
         response.Data = data;
 
         return response;

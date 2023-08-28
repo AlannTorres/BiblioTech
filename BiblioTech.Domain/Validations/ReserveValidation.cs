@@ -7,16 +7,16 @@ public class ReserveValidation : AbstractValidator<Reserve>
     public ReserveValidation()
     {
         RuleFor(x => x.User)
-            .NotEmpty();
+            .NotNull();
 
         RuleFor(x => x.Book)
-            .NotEmpty();
+            .NotNull();
 
         RuleFor(x => x.Reserve_Date)
-            .NotEmpty();
+            .NotNull();
 
-        RuleFor(x => x.Reserve_Status)
-            .NotEmpty();
+        RuleFor(x => x.Status_Reserve)
+            .NotNull();
 
     }
 }
