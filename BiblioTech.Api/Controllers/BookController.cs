@@ -17,7 +17,7 @@ namespace BiblioTech.Api.Controllers
         }
 
         [HttpPost("CreateBook")]
-        //[Authorize(Roles = "employee")]
+        [Authorize(Roles = "employee")]
         public async Task<ActionResult> CreateBookAsync(CreateBookRequest book)
         {
             var response = await _bookApplication.CreateBookAsync(book);
@@ -31,7 +31,7 @@ namespace BiblioTech.Api.Controllers
         }
 
         [HttpPut("UpdateBook")]
-        //[Authorize(Roles = "employee")]
+        [Authorize(Roles = "employee")]
         public async Task<ActionResult> UpdateBookAsync(UpdateBookRequest book, string book_id)
         {
             var response = await _bookApplication.UpdateBookAsync(book, book_id);
@@ -45,7 +45,7 @@ namespace BiblioTech.Api.Controllers
         }
 
         [HttpDelete("DeleteBook")]
-        //[Authorize(Roles = "employee")]
+        [Authorize(Roles = "employee")]
         public async Task<ActionResult> DeleteBookAsync(string book_id)
         {
             var response = await _bookApplication.DeleteBookAsync(book_id);
@@ -59,7 +59,7 @@ namespace BiblioTech.Api.Controllers
         }
 
         [HttpGet("GetBookByFilter")]
-        //[Authorize(Roles = "client, employee")]
+        [Authorize(Roles = "client, employee")]
         public async Task<ActionResult> ListAllBooksByFilterAsync(string? book_name = null)
         {
             var response = await _bookApplication.ListAllBooksByFilterAsync(book_name);

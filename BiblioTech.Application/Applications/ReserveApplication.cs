@@ -26,6 +26,8 @@ public class ReserveApplication : IReserveApplication
         {
             var reserve = _mapper.Map<Reserve>(reserveRequest);
 
+            reserve.Reserve_Date = DateTime.UtcNow; 
+
             return await _reserveService.CreateReserveAsync(reserve);
         }
         catch (Exception ex)

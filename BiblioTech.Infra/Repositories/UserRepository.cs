@@ -18,9 +18,7 @@ public class UserRepository : IUserRepository
     //Client
     public async Task<List<User>> ListClientsByFilterAsync(string user_email = null, string name = null)
     {
-        string sql = @"SELECT *
-                       FROM Users
-                       WHERE role = 'client'";
+        string sql = @"SELECT * FROM Users WHERE role = 'client'";
 
         if (!string.IsNullOrEmpty(user_email)) { sql += " AND email = @user_email"; }
 
@@ -34,19 +32,16 @@ public class UserRepository : IUserRepository
 
     public async Task<List<BookLoan>> ListAllBooksClientAsync(string user_email)
     {
-        string sql = @"SELECT
-                           BL.*,
-                           L.*,
-                           B.*,
-                           U.*
-                        FROM BookLoans BL
-                        INNER JOIN Loans L ON BL.loan_id = L.id
-                        INNER JOIN Books B ON BL.book_id = B.id
-                        INNER JOIN Users U ON L.user_id = U.id
-                        WHERE U.email = @user_email
-                        AND U.role = 'client' ";
+        string sql = @"SELECT BL.*, L.*, B.*, U.*
+                       FROM BookLoans BL
+                       INNER JOIN Loans L ON BL.loan_id = L.id
+                       INNER JOIN Books B ON BL.book_id = B.id
+                       INNER JOIN Users U ON L.user_email = U.email
+                       WHERE U.email = @user_email
+                       AND U.role = 'client' ";
 
-        var bookloans = await _dbConnector.DbConnection.QueryAsync<BookLoan, Book, Loan, BookLoan>(
+        var bookloans = await _dbConnector.DbConnection
+            .QueryAsync<BookLoan, Book, Loan, BookLoan>(
             sql: sql, 
             map: (bookloan, book, loan) =>
             {
@@ -63,17 +58,13 @@ public class UserRepository : IUserRepository
 
     public async Task<List<Reserve>> ListAllReserveClientAsync(string user_email)
     {
-        string sql = @"SELECT 
-                            R.*,
-                            B.*,
-                            U.*,
-                            E.*
-                        FROM Reserves R
-                        INNER JOIN Books B ON R.book_id = B.id
-                        INNER JOIN Users U ON R.user_id = U.id
-                        INNER JOIN Users E ON R.employee_id = E.id
-                        WHERE U.email = @user_email
-                        AND U.role = 'client'";
+        string sql = @"SELECT R.*, B.*, U.*, E.*
+                       FROM Reserves R
+                       INNER JOIN Books B ON R.book_id = B.id
+                       INNER JOIN Users U ON R.user_email = U.email
+                       INNER JOIN Users E ON R.employee_email = E.email
+                       WHERE U.email = @user_email
+                       AND U.role = 'client'";
 
         var reserves = await _dbConnector.DbConnection
                             .QueryAsync<Reserve, Book, User, User, Reserve>(
@@ -95,9 +86,7 @@ public class UserRepository : IUserRepository
     // Employee
     public async Task<List<User>> ListEmployeesByFilterAsync(string user_email = null, string name = null)
     {
-        string sql = @"SELECT *
-                       FROM Users
-                       WHERE role = 'employee'";
+        string sql = @"SELECT * FROM Users WHERE role = 'employee'";
 
         if (!string.IsNullOrEmpty(user_email)) { sql += " AND email = @user_email"; }
 
@@ -111,16 +100,12 @@ public class UserRepository : IUserRepository
 
     public async Task<List<Loan>> ListAllLoanEmployeeAsync(string user_email)
     {
-        string sql = @"SELECT
-                           L.*,
-                           L.id as id_loan,
-                           U.*,
-                           E.*
+        string sql = @"SELECT L.*, L.id as id_loan, U.*, E.*
                        FROM Loans L
-                       INNER JOIN Users U ON L.user_id = U.id
-                       INNER JOIN Users E ON L.employee_id = E.id
+                       INNER JOIN Users U ON L.user_email = U.email
+                       INNER JOIN Users E ON L.employee_email = E.email
                        WHERE E.email = @user_email
-                        AND E.role = 'employee'";
+                       AND E.role = 'employee'";
 
         var loans = await _dbConnector.DbConnection
             .QueryAsync<Loan, User, User, Loan>(
@@ -149,17 +134,13 @@ public class UserRepository : IUserRepository
 
     public async Task<List<Reserve>> ListAllReserveEmployeeAsync(string user_email)
     {
-        string sql = @"SELECT 
-                            R.*,
-                            B.*,
-                            U.*,
-                            E.*
-                        FROM Reserves R
-                        INNER JOIN Books B ON R.book_id = B.id
-                        INNER JOIN Users U ON R.user_id = U.id
-                        INNER JOIN Users E ON R.employee_id = E.id
-                        WHERE E.email = @user_email
-                        AND E.role = 'employee'";
+        string sql = @"SELECT R.*, B.*, U.*, E.*
+                       FROM Reserves R
+                       INNER JOIN Books B ON R.book_id = B.id
+                       INNER JOIN Users U ON R.user_email = U.email
+                       INNER JOIN Users E ON R.employee_email = E.email
+                       WHERE E.email = @user_email
+                       AND E.role = 'employee'";
 
         var reserves = await _dbConnector.DbConnection
                             .QueryAsync<Reserve, Book, User, User, Reserve>(
@@ -181,14 +162,11 @@ public class UserRepository : IUserRepository
     // All User
     public async Task<List<BookLoan>> GetBookLoanByLoanIdAsync(string bookloan_id)
     {
-        string sql = @"SELECT
-                           BL.*,
-                           L.*,
-                           B.*
-                    FROM BookLoans BL
-                    INNER JOIN Loans L ON BL.loan_id = L.id
-                    INNER JOIN Books B ON BL.book_id = B.id
-                    WHERE BL.loan_id = @bookloan_id";
+        string sql = @"SELECT BL.*, L.*, B.*
+                       FROM BookLoans BL
+                       INNER JOIN Loans L ON BL.loan_id = L.id
+                       INNER JOIN Books B ON BL.book_id = B.id
+                       WHERE BL.loan_id = @bookloan_id";
 
         var bookLoans = await _dbConnector.DbConnection
             .QueryAsync<BookLoan, Book, BookLoan>(
@@ -213,13 +191,7 @@ public class UserRepository : IUserRepository
 
         var param = new
         {
-            user.PasswordHash,
-            user.Name,
-            user.CPF,
-            user.Email,
-            user.Telephone,
-            user.Adress,
-            user.Role
+            user.PasswordHash, user.Name,user.CPF, user.Email, user.Telephone, user.Adress, user.Role
         };
 
         await _dbConnector.DbConnection
@@ -228,28 +200,19 @@ public class UserRepository : IUserRepository
 
     public async Task UpdateUserAsync(User user, string user_email)
     {
-        string sql = @"UPDATE Users
-                       SET 
-                            passwordHash = @passwordHash,
-                            name = @name,
-                            CPF = @CPF,
-                            email = @email,
-                            telephone = @telephone,
-                            adress = @adress,
-                            role = @role
-                       WHERE
-                            email = @user_email";   
+        string sql = @"UPDATE Users SET 
+                         passwordHash = @passwordHash,
+                         name = @name,
+                         CPF = @CPF,
+                         email = @email,
+                         telephone = @telephone,
+                         adress = @adress,
+                         role = @role
+                       WHERE email = @user_email";   
 
         var param = new
         {
-            user.PasswordHash,
-            user.Name,
-            user.CPF,
-            user.Email,
-            user.Telephone,
-            user.Adress,
-            user.Role,
-            user_email
+            user.PasswordHash, user.Name, user.CPF, user.Email, user.Telephone, user.Adress, user.Role, user_email
         };
 
         await _dbConnector.DbConnection
@@ -271,6 +234,16 @@ public class UserRepository : IUserRepository
 
         var user = await _dbConnector.DbConnection.
             QueryAsync<bool>(sql, new { Cpf }, _dbConnector.DbTransaction);
+
+        return user.FirstOrDefault();
+    }
+
+    public async Task<bool> ExistsUserByEmailAsync(string email)
+    {
+        string sql = "SELECT 1 FROM Users WHERE email = @email";
+
+        var user = await _dbConnector.DbConnection.
+            QueryAsync<bool>(sql, new { email }, _dbConnector.DbTransaction);
 
         return user.FirstOrDefault();
     }
@@ -297,18 +270,13 @@ public class UserRepository : IUserRepository
 
     public async Task<List<BookLoan>> VerifyUserPendingAsync(string user_email)
     {
-        string sql = @"SELECT
-                            Loans.id AS loan_id,
-                            Books.id AS book_id,
-                            Books.title AS book_title,
-                            Loans.loan_Date,
-                            Loans.due_Date,
-                            BookLoans.loan_Status
-                        FROM Loans
-                        INNER JOIN BookLoans ON Loans.id = BookLoans.loan_id
-                        INNER JOIN Books ON BookLoans.book_id = Books.id
-                        INNER JOIN Users ON Loans.user_id = Users.id
-                        WHERE Users.email = @user_email AND BookLoans.loan_Status = 'pending'";
+        string sql = @"SELECT L.id, B.id, BL.loan_Status
+                        FROM Loans L
+                        INNER JOIN BookLoans BL ON L.id = BL.loan_id
+                        INNER JOIN Books B ON BL.book_id = B.id
+                        INNER JOIN Users U ON L.user_id = U.id
+                        WHERE U.email = @user_email 
+                        AND BL.loan_Status = 'pending'";
 
         var bookLoans = await _dbConnector.DbConnection
                             .QueryAsync<BookLoan>(sql, new { user_email }, _dbConnector.DbTransaction);

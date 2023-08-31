@@ -21,12 +21,7 @@ public class BookRepository : IBookRepository
 
         var param = new
         {
-            book.ISBN,
-            book.Title,
-            book.Year_publication,
-            book.Description,
-            book.Quantity,
-            book.Publishing,
+            book.ISBN, book.Title, book.Year_publication,  book.Description,  book.Quantity,  book.Publishing,
         };
 
         await _dbConnector.DbConnection
@@ -35,24 +30,18 @@ public class BookRepository : IBookRepository
 
     public async Task UpdateBookAsync(Book book, string book_id)
     {
-        string sql = @"UPDATE Books
-                       SET ISBN = @ISBN,
-                           title = @title,
-                           year_publication = @year_publication,
-                           description = @description,
-                           quantity = @quantity,
-                           publishing = @publishing
+        string sql = @"UPDATE Books SET 
+                         ISBN = @ISBN,
+                         title = @title,
+                         year_publication = @year_publication,
+                         description = @description,
+                         quantity = @quantity,
+                         publishing = @publishing
                        WHERE id = @book_id";
 
         var param = new
         {
-            book.ISBN,
-            book.Title,
-            book.Year_publication,
-            book.Description,
-            book.Quantity,
-            book.Publishing,
-            book_id
+            book.ISBN, book.Title, book.Year_publication, book.Description, book.Quantity, book.Publishing, book_id
         };
 
         await _dbConnector.DbConnection
@@ -76,22 +65,21 @@ public class BookRepository : IBookRepository
         return book;
     }
 
-    public async Task<Book> GetBookByISBNAsync(string book_isbn)
+    public async Task<bool> ExistBookByISBNAsync(string book_isbn)
     {
-        string sql = "SELECT * FROM Books WHERE ISBN = @book_isbn";
+        string sql = "SELECT 1 FROM Books WHERE ISBN = @book_isbn";
 
-        var book = await _dbConnector.DbConnection.QuerySingleAsync(sql, new { book_isbn }, _dbConnector.DbTransaction);
+        var book = await _dbConnector.DbConnection.
+            QueryAsync<bool>(sql, new { book_isbn }, _dbConnector.DbTransaction);
 
-        return book;
+        return book.FirstOrDefault();
     }
 
     public async Task<List<Book>> ListAllBooksByFilterAsync(string book_name = null)
     {
-        string sql = @"SELECT *
-                       FROM Books
-                       WHERE 1 = 1";
+        string sql = @"SELECT * FROM Books";
 
-        if (!string.IsNullOrEmpty(book_name)) { sql += " AND title LIKE @book_name"; }
+        if (!string.IsNullOrEmpty(book_name)) { sql += " WHERE title LIKE @book_name"; }
 
         var books = await _dbConnector.DbConnection
                         .QueryAsync<Book>(sql, new { book_name = $"%{book_name}%" }, _dbConnector.DbTransaction);
@@ -114,5 +102,4 @@ public class BookRepository : IBookRepository
 
         return quantity;
     }
-
 }

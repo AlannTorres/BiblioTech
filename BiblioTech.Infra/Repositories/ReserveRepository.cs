@@ -16,73 +16,72 @@ public class ReserveRepository : IReserveRepository
 
     public async Task CloseReserveAsync(string user_email, string book_id)
     {
-        string sql = @"UPDATE Reserves
-                       SET status_Reserve = 'canceled'
-                       FROM Reserves
-                       JOIN Users ON Reserves.user_id = Users.id
-                       WHERE Users.email = @user_email
-                         AND Reserves.book_id = @book_id
-                         AND Reserves.status_Reserve = 'active';";
+        string sql = @"UPDATE R SET status_Reserve = 'canceled'
+                       FROM Reserves R
+                       JOIN Users U ON R.user_email = U.email
+                       WHERE U.email = @user_email
+                       AND R.book_id = @book_id
+                       AND R.status_Reserve = 'active'";
 
-        await _dbConnector.DbConnection.ExecuteAsync(sql, new { user_email, book_id }, _dbConnector.DbTransaction);
+        await _dbConnector.DbConnection
+            .ExecuteAsync(sql, new { user_email, book_id }, _dbConnector.DbTransaction);
     }
 
     public async Task CreateReserveAsync(Reserve bookReserve)
     {
-        string sql = @"INSERT INTO Reserves (user_id, book_id, employee_id, reserve_Date, status_Reserve)
-                        VALUES (@user_id, @book_id, @employee_id, @reserve_Date, @status_Reserve)";
+        string sql = @"INSERT INTO Reserves (user_email, book_id, employee_email, reserve_Date, status_Reserve, EstimatedArrival_Date)
+                        VALUES (@user_email, @book_id, @employee_email, @reserve_Date, @status_Reserve, @estimatedArrival_Date)";
 
         var param = new
         {
-            user_id = bookReserve.User.Id,
+            user_email = bookReserve.User.Email,
             book_id = bookReserve.Book.Id,
-            employee_id = bookReserve.Employee.Id,
+            employee_email = bookReserve.Employee.Email,
             reserve_Date = bookReserve.Reserve_Date,
-            status_Reserve = bookReserve.Status_Reserve.ToString()
+            status_Reserve = bookReserve.Status_Reserve.ToString(),
+            estimatedArrival_Date = bookReserve.EstimatedArrival_Date
         };
 
-        await _dbConnector.DbConnection.ExecuteAsync(sql, param, _dbConnector.DbTransaction);
+        await _dbConnector.DbConnection
+            .ExecuteAsync(sql, param, _dbConnector.DbTransaction);
     }
 
     public async Task<bool> ExistReserveByUserEmail(string user_email)
     {
-        string sql = @"SELECT 1 
-                       FROM Reserves R 
-                       INNER JOIN Users U ON R.user_id = U.id 
+        string sql = @"SELECT 1 FROM Reserves R 
+                       INNER JOIN Users U ON R.user_email = U.email
                        WHERE U.email = @user_email";
 
-        var result = await _dbConnector.DbConnection.ExecuteScalarAsync<int>(sql, new { user_email }, _dbConnector.DbTransaction);
+        var result = await _dbConnector.DbConnection.QueryAsync<bool>(sql, new { user_email }, _dbConnector.DbTransaction);
 
-        return result > 0;
+        return result.SingleOrDefault();
     }
 
     public async Task<DateTime> GetEstimatedArrivalDateByBookId(string book_id)
     {
-        string sql = @"SELECT MIN(devolution_Date) 
-                       FROM BookLoans 
+        string sql = @"SELECT MIN(devolution_Date) FROM BookLoans 
                        WHERE book_id = @book_id";
 
-        var estimatedArrivalDate = await _dbConnector.DbConnection.ExecuteScalarAsync<DateTime?>(sql, new { book_id }, _dbConnector.DbTransaction);
+        var estimatedArrivalDate = await _dbConnector.DbConnection
+            .ExecuteScalarAsync<DateTime?>(sql, new { book_id }, _dbConnector.DbTransaction);
 
         return estimatedArrivalDate.Value; 
     }
 
     public async Task<List<Reserve>> ListAllReserveByFilterAsync(string book_name = null, string user_name = null)
     {
-        string sql = @"SELECT
-                           R.*,
-                           B.*,
-                           U.*,
-                           E.*
+        string sql = @"SELECT R.*, B.*, U.*, E.*
                        FROM Reserves R
                        INNER JOIN Books B ON R.book_id = B.id
-                       INNER JOIN Users U ON R.user_id = U.id
-                       INNER JOIN Users E ON R.employee_id = E.id
+                       INNER JOIN Users U ON R.user_email = U.email
+                       INNER JOIN Users E ON R.employee_email = E.email
                        WHERE 1 = 1";
 
         if (!string.IsNullOrEmpty(book_name)) { sql += " AND B.title LIKE @book_name"; }
 
         if (!string.IsNullOrEmpty(user_name)) { sql += " AND U.name LIKE @user_name"; }
+
+        sql += " ORDER BY R.reserve_Date";
 
         var reserves = await _dbConnector.DbConnection
             .QueryAsync<Reserve, Book, User, User, Reserve>(

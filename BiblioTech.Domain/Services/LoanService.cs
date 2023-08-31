@@ -18,6 +18,17 @@ public class LoanService : ILoanService
     {
         var response = new Response();
 
+        foreach (var book in loan.Books)
+        {
+            int quantity = await _unitOfWork.BookRepository.GetQuantityBookAsync(book.Book.Id);
+
+            if (quantity == 0)
+            {
+                response.Report.Add(Report.Create($"O livro de id: {book.Id} não esta disponivel!"));
+                return response;
+            }
+        }
+
         var validation = new LoanValidation();
         var errors = validation.Validate(loan).GetErrors();
 
@@ -41,7 +52,7 @@ public class LoanService : ILoanService
         return response;
     }
 
-    public async Task<Response> ResgisterReturnAsync(string user_email, string book_id)
+    public async Task<Response> RegisterReturnAsync(string user_email, string book_id)
     {
         var response = new Response();
 

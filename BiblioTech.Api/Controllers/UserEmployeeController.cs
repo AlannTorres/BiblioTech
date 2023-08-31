@@ -72,11 +72,11 @@ public class UserEmployeeController : Controller
         return Ok(response);
     }
 
-    [HttpGet("ListReserveEmployee")]
+    [HttpGet("ListLoanEmployee")]
     //[Authorize(Roles = "employee")]
-    public async Task<ActionResult> ListAllReserveEmployeeAsync([FromQuery] string employee_email)
+    public async Task<ActionResult> ListAllLoanEmployeeAsync([FromQuery] string employee_email)
     {
-        var response = await _userEmployeeApplication.ListAllReserveEmployeeAsync(employee_email);
+        var response = await _userEmployeeApplication.ListAllLoanEmployeeAsync(employee_email);
 
         if (response.Report.Any())
         {
@@ -86,11 +86,11 @@ public class UserEmployeeController : Controller
         return Ok(response);
     }
 
-    [HttpGet("ListLoanEmployee")]
+    [HttpGet("ListReserveEmployee")]
     //[Authorize(Roles = "employee")]
-    public async Task<ActionResult> ListAllLoanEmployeeAsync([FromQuery] string employee_email)
+    public async Task<ActionResult> ListAllReserveEmployeeAsync([FromQuery] string employee_email)
     {
-        var response = await _userEmployeeApplication.ListAllLoanEmployeeAsync(employee_email);
+        var response = await _userEmployeeApplication.ListAllReserveEmployeeAsync(employee_email);
 
         if (response.Report.Any())
         {

@@ -48,7 +48,7 @@ public class ReserveService : IReserveService
     {
         var response = new Response();
 
-        var exist = await _unitOfWork.ReserveRepository.ExistReserveByUserEmail(user_email);
+        bool exist = await _unitOfWork.ReserveRepository.ExistReserveByUserEmail(user_email);
 
         if (!exist)
         {

@@ -69,9 +69,9 @@ public class UserClientController : Controller
         return Ok(response);
     }
 
-    [HttpGet("GetBooksUserClient")]
+    [HttpGet("GetBooksLoanUserClient")]
     //[Authorize(Roles = "client")]
-    public async Task<ActionResult> ListAllBooksClientsAsync([FromQuery] string user_email)
+    public async Task<ActionResult> ListAllBooksLoanClientsAsync([FromQuery] string user_email)
     {
         var response = await _userClientApplication.ListAllBooksClientAsync(user_email);
 

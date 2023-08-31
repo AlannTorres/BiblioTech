@@ -22,10 +22,10 @@ public class Core : Profile
 
         CreateMap<Loan, LoanResponse>();
         CreateMap<CreateLoanRequest, Loan>()
-            .ForPath(target => target.User.Id, 
-                       opt  => opt.MapFrom(source => source.User_id))
-            .ForPath(target => target.Employee.Id,
-                       opt => opt.MapFrom(source => source.Employee_id));
+            .ForPath(target => target.User.Email, 
+                       opt  => opt.MapFrom(source => source.User_email))
+            .ForPath(target => target.Employee.Email,
+                       opt => opt.MapFrom(source => source.Employee_email));
 
         CreateMap<BookLoan, BookLoanResponse>();
         CreateMap<CreateBookLoanRequest, BookLoan>()
@@ -34,12 +34,12 @@ public class Core : Profile
 
         CreateMap<Reserve, ReserveResponse>();
         CreateMap<CreateReserveRequest, Reserve>()
-            .ForPath(target => target.User.Id,
-                       opt => opt.MapFrom(source => source.User_id))
             .ForPath(target => target.Book.Id,
                        opt => opt.MapFrom(source => source.Book_id))
-            .ForPath(target => target.Employee.Id,
-                       opt => opt.MapFrom(source => source.Employee_id));
+            .ForPath(target => target.User.Email,
+                       opt => opt.MapFrom(source => source.User_email))
+            .ForPath(target => target.Employee.Email,
+                       opt => opt.MapFrom(source => source.Employee_email));
 
         CreateMap<Book, BookResponse>();
         CreateMap<UpdateBookRequest, Book>();

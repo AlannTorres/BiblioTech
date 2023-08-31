@@ -35,6 +35,14 @@ public class BookService : IBookService
     {
         var response = new Response();
 
+        var existBook = await _unitOfWork.BookRepository.ExistBookByISBNAsync(book.ISBN);
+
+        if (existBook)
+        {
+            response.Report.Add(Report.Create($"Livro com isbn: {book.ISBN}, já existe!"));
+            return response;
+        }
+
         var validation = new BookValidation();
         var errors = validation.Validate(book).GetErrors();
 

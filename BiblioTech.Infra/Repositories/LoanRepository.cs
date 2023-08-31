@@ -33,14 +33,11 @@ public class LoanRepository : ILoanRepository
 
     public async Task<List<BookLoan>> GetBookLoanByLoanIdAsync(string bookloan_id)
     {
-        string sql = @"SELECT
-                           BL.*,
-                           L.*,
-                           B.*
-                    FROM BookLoans BL
-                    INNER JOIN Loans L ON BL.loan_id = L.id
-                    INNER JOIN Books B ON BL.book_id = B.id
-                    WHERE BL.loan_id = @bookloan_id";
+        string sql = @"SELECT BL.*, L.*, B.*
+                       FROM BookLoans BL
+                       INNER JOIN Loans L ON BL.loan_id = L.id
+                       INNER JOIN Books B ON BL.book_id = B.id
+                       WHERE BL.loan_id = @bookloan_id";
 
         var bookLoans = await _dbConnector.DbConnection
             .QueryAsync<BookLoan, Book, BookLoan>(
@@ -59,18 +56,19 @@ public class LoanRepository : ILoanRepository
 
     public async Task CreateLoanAsync(Loan loan)
     {
-        string sql = @"INSERT INTO Loans (user_id, employee_id, loan_Date)
+        string sql = @"INSERT INTO Loans (user_email, employee_email, loan_Date)
                        OUTPUT INSERTED.id
-                       VALUES (@user_id, @employee_id, @load_Date)";
+                       VALUES (@user_email, @employee_email, @load_Date)";
 
         var param = new
         {
-            user_id = loan.User.Id,
-            employee_id = loan.Employee.Id,
+            user_email = loan.User.Email,
+            employee_email = loan.Employee.Email,
             load_Date = loan.Loan_Date
         };
 
-        string loan_id = await _dbConnector.DbConnection.ExecuteScalarAsync<string>(sql, param, _dbConnector.DbTransaction);
+        string loan_id = await _dbConnector.DbConnection
+            .ExecuteScalarAsync<string>(sql, param, _dbConnector.DbTransaction);
 
         if (loan.Books.Any())
         {
@@ -84,10 +82,9 @@ public class LoanRepository : ILoanRepository
 
     public async Task<bool> ExistLoanByUserEmail(string user_email)
     {
-        string sql = @"SELECT 1
-                      FROM Loans 
-                      INNER JOIN Users ON Loans.user_id = Users.id
-                      WHERE Users.email = @user_email";
+        string sql = @"SELECT 1 FROM Loans L
+                      INNER JOIN Users U ON L.user_email= U.email
+                      WHERE U.email = @user_email";
 
         var loan = await _dbConnector.DbConnection
             .QueryAsync<bool>(sql, new { user_email }, _dbConnector.DbTransaction);
@@ -97,16 +94,12 @@ public class LoanRepository : ILoanRepository
 
     public async Task<List<Loan>> ListAllLoanByFilterAsync(string? user_name = null)
     {
-        string sql = @"SELECT
-                           L.*,
-                           U.*,
-                           E.*
+        string sql = @"SELECT L.*, U.*, E.*
                        FROM Loans L
-                       INNER JOIN Users U ON L.user_id = U.id
-                       INNER JOIN Users E ON L.employee_id = E.id
-                       WHERE 1 = 1";
+                       INNER JOIN Users U ON L.user_email = U.email
+                       INNER JOIN Users E ON L.employee_email = E.email";
 
-        if (!string.IsNullOrEmpty(user_name)) { sql += " AND U.name LIKE @user_name"; }
+        if (!string.IsNullOrEmpty(user_name)) { sql += " WHERE U.name LIKE @user_name"; }
 
         var loans = await _dbConnector.DbConnection
             .QueryAsync<Loan, User, User, Loan>(
@@ -135,10 +128,7 @@ public class LoanRepository : ILoanRepository
 
     public async Task<List<BookLoan>> ListBookLoanByLoanIdAsync(string loan_id)
     {
-        string sql = @"SELECT
-                       BL.*,
-                       B.*,
-	                   L.*
+        string sql = @"SELECT BL.*, B.*, L.*
                        FROM BookLoans BL
                        INNER JOIN Books B ON BL.book_id = B.id
                        INNER JOIN Loans L ON BL.loan_id = L.id
@@ -161,12 +151,13 @@ public class LoanRepository : ILoanRepository
 
     public async Task RegisterReturnBookLoanAsync(string user_email, string book_id)
     {
-        string sql = @"UPDATE BL
-                        SET BL.loan_Status = 'returned'
+        string sql = @"UPDATE BL SET BL.loan_Status = 'returned'
                         FROM BookLoans BL
                         INNER JOIN Loans L ON BL.loan_id = L.id
-                        INNER JOIN Users U ON L.user_id = U.id
-                        WHERE U.email = @user_email AND BL.book_id = @book_id AND BL.loan_Status = 'pending'";
+                        INNER JOIN Users U ON L.user_email = U.email
+                        WHERE U.email = @user_email 
+                        AND BL.book_id = @book_id 
+                        AND BL.loan_Status = 'pending'";
 
         await _dbConnector.DbConnection
             .ExecuteAsync(sql, new { user_email, book_id }, _dbConnector.DbTransaction);

@@ -11,10 +11,7 @@ public class UnitOfWork : IUnitOfWork
     private ILoanRepository _loanRepository;
     private IReserveRepository _reserveRepository;
 
-    public UnitOfWork(IDbConnector dbConnector)
-    {
-        this.DbConnector = dbConnector;
-    }
+    public UnitOfWork(IDbConnector dbConnector) => this.DbConnector = dbConnector;
 
     public IUserRepository UserRepository => 
         _userRepository ??= new UserRepository(DbConnector);

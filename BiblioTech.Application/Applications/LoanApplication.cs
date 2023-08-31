@@ -37,9 +37,9 @@ public class LoanApplication : ILoanApplication
         }
     }
 
-    public async Task<Response> ResgisterReturnAsync(string user_email, string book_id)
+    public async Task<Response> RegisterReturnAsync(string user_email, string book_id)
     {
-        return await _loanService.ResgisterReturnAsync(user_email, book_id);
+        return await _loanService.RegisterReturnAsync(user_email, book_id);
     }
 
     public async Task<Response<List<LoanResponse>>> ListAllLoanByFilterAsync(string? user_name = null)

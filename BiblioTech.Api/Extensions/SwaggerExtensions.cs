@@ -29,7 +29,6 @@ public static class SwaggerExtensions
 
             var xmlApiPath = Path.Combine(Directory.GetCurrentDirectory(), $"{typeof(Program).Assembly.GetName().Name}.xml");
 
-
             c.IncludeXmlComments(xmlApiPath);
         });
     }

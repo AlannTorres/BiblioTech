@@ -33,7 +33,7 @@ public class LoanController : Controller
     [HttpPut("RegisteReturnBook")]
     public async Task<ActionResult> ResgisterReturnAsync([FromQuery] string user_email, [FromQuery] string book_id)
     {
-        var response = await _loanApplication.ResgisterReturnAsync(user_email, book_id);
+        var response = await _loanApplication.RegisterReturnAsync(user_email, book_id);
 
         if (response.Report.Any())
         {

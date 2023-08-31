@@ -11,6 +11,7 @@ public interface IUserRepository
     Task UpdateUserAsync(User user, string user_email);
     Task DeleteUserAsync(string user_email);
     Task<bool> ExistsUserByCpfAsync(string Cpf);
+    Task<bool> ExistsUserByEmailAsync(string email);
     Task<List<BookLoan>> VerifyUserPendingAsync(string user_email);
 
     Task<List<User>> ListEmployeesByFilterAsync(string user_email = null, string name = null);

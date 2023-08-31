@@ -45,6 +45,14 @@ public class UserService : IUserService
     {
         var response = new Response();
 
+        var existUser = await _unitOfWork.UserRepository.ExistsUserByCpfAsync(user.CPF);
+
+        if (existUser)
+        {
+            response.Report.Add(Report.Create($"Usuario com CPF: {user.CPF}, já existe!"));
+            return response;
+        }
+
         var validation = new UserValidation();
         var errors = validation.Validate(user).GetErrors();
 
@@ -99,11 +107,11 @@ public class UserService : IUserService
 
         if (!string.IsNullOrWhiteSpace(user_email))
         {
-            var exists = await _unitOfWork.UserRepository.GetUserByEmailAsync(user_email);
+            var exists = await _unitOfWork.UserRepository.ExistsUserByEmailAsync(user_email);
 
-            if (exists.Equals(null))
+            if (!exists)
             {
-                response.Report.Add(Report.Create($"Usuario com email: {user_email} não existe!"));
+                response.Report.Add(Report.Create($"Usuario com email: '{user_email}' não existe!"));
                 return response;
             }
         }

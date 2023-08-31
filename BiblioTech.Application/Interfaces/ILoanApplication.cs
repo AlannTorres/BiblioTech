@@ -7,6 +7,6 @@ namespace BiblioTech.Application.Interfaces;
 public interface ILoanApplication
 {
     Task<Response> CreateLoanAsync(CreateLoanRequest loanRequest, int days);
-    Task<Response> ResgisterReturnAsync(string user_email, string book_id);
+    Task<Response> RegisterReturnAsync(string user_email, string book_id);
     Task<Response<List<LoanResponse>>> ListAllLoanByFilterAsync(string? user_name = null);
 }
